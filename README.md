@@ -2,6 +2,39 @@
 
 A Roam Research extension that provides Vim-like keyboard navigation for blocks. Ported from [roam-toolkit](https://github.com/roam-unofficial/roam-toolkit).
 
+## Folded block fix
+
+This fork includes the `folded-o-v1` build. The `o` command uses the fold state
+shown in the selected view. A folded block gets a new sibling below it. An
+expanded block with children gets a new first child. `Shift+O` adds a sibling
+above the selected block.
+
+### Import this build from a URL
+
+1. In Roam, open Settings > Roam Depot and enable Developer Mode.
+2. Turn off the installed Vim Mode extension so that only one copy is active.
+3. In Developer Extensions, select the remote URL import option.
+4. Paste this root URL, without adding `extension.js`:
+
+   ```text
+   https://raw.githubusercontent.com/gvteja/roam-vim-mode/folded-o-v1
+   ```
+
+5. Load the extension.
+
+This URL selects the `folded-o-v1` build. It does not track future changes to
+`main`. The root contains the required `README.md` and `extension.js` files.
+
+Developer extensions are local to each client. Remote URL imports start again
+when Roam opens in that client, but do not sync across devices. Repeat the import
+in each browser profile or desktop client where you want to use it. Roam
+downloads remote developer files at startup and when you reload them; it does
+not cache them like production Depot extensions. See the
+[official Developer Mode documentation](https://roamresearch.com/#/app/developer-documentation/page/5BB8h4I7b).
+
+To return to the Depot build, disable this developer extension and enable the
+original Vim Mode extension.
+
 ## Features
 
 - **Block Navigation**: Navigate between blocks using `j`/`k` keys
@@ -29,7 +62,7 @@ A Roam Research extension that provides Vim-like keyboard navigation for blocks.
 |-----|-------------|
 | `i` | Enter insert mode (start) |
 | `a` | Enter insert mode (end) |
-| `o` | Insert block below |
+| `o` | Insert below: a sibling if folded, or a first child if expanded with children |
 | `O` | Insert block above |
 | `V` | Enter visual mode (line) |
 | `dd` | Delete block |
@@ -109,7 +142,7 @@ a binding, or call `setLeaderConfig()` with your own tree.
 3. Open Roam Research
 4. Go to Settings > Roam Depot
 5. Enable Developer Mode
-6. Click "Load unpacked extension"
+6. Click "Load extension"
 7. Select the folder containing `extension.js`
 
 ## Development

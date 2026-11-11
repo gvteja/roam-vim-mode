@@ -79,6 +79,15 @@ export function nearestFoldButton(element) {
     return null;
 }
 
+/** Use the selected view's fold state, which can differ from the saved state. */
+function isBlockOpen(element, savedOpen) {
+    // Inspect only this block's container, not an ancestor's or child's caret.
+    const container = element?.closest(Selectors.blockContainer);
+    if (container?.classList.contains('rm-block--closed')) return false;
+    if (container?.classList.contains('rm-block--open')) return true;
+    return savedOpen;
+}
+
 // ============== Roam API Wrapper ==============
 export const Roam = {
     async save(roamNode) {
@@ -228,8 +237,8 @@ export const Roam = {
      * Create an empty block below `element` and focus it (vim's `o`).
      *
      * Mirrors Roam's own Enter-at-end rule: a block that has children and is
-     * expanded gets a new *first child*, anything else gets a sibling directly
-     * below. Doing this through the API rather than by simulating Enter means the
+     * expanded in the selected view gets a new *first child*. Anything else gets
+     * a sibling directly below. Using the API instead of simulating Enter means the
      * result doesn't depend on Roam's keyboard handling or on render timing.
      *
      * @returns {Promise<string|null>} the new block's uid
@@ -241,7 +250,7 @@ export const Roam = {
             debugLog('roam', 'createBlockBelow: resolved block', { uid, block });
 
             if (block) {
-                const nestIntoChildren = block.open && block.childCount > 0;
+                const nestIntoChildren = block.childCount > 0 && isBlockOpen(element, block.open);
                 const parentUid = nestIntoChildren ? block.uid : block.parentUid;
                 const order = nestIntoChildren ? 0 : block.order + 1;
 
