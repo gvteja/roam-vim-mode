@@ -36,6 +36,7 @@ export function installDomStub() {
 
     const makeElement = () => ({
         style: {},
+        dataset: {},
         classList: { add: noop, remove: noop, contains: () => false },
         appendChild: noop,
         remove: noop,

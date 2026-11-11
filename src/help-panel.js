@@ -24,7 +24,7 @@ const KEYBINDINGS = {
         { key: 'u', description: 'Undo' },
         { key: 'Ctrl+r', description: 'Redo' },
         { key: 'z', description: 'Toggle fold' },
-        { key: 'c', description: 'Center current block' },
+        { key: 'c', description: 'Copy block reference (normal / visual)' },
     ],
     'Search': [
         { key: '/', description: 'Search in current panel' },
@@ -34,10 +34,11 @@ const KEYBINDINGS = {
     'Hints': [
         { key: 'f', description: 'Hint all links on page' },
         { key: 'F', description: 'Hint links → open in sidebar' },
-        { key: 'q/w/e/r/t/b', description: 'Click link in block' },
+        { key: 'q/w/e/r/t/m/b', description: 'Click hint 0–6 in block' },
         { key: 'Shift + hint', description: 'Shift-click link' },
     ],
     'Other': [
+        { key: 'Alt+w', description: 'Close current sidebar page (all modes)' },
         { key: 'Esc', description: 'Return to normal mode' },
         { key: '?', description: 'Toggle this help panel' },
         { key: 'Space', description: 'Leader menu (if enabled)' },

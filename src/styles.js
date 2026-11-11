@@ -3,6 +3,7 @@
  */
 
 import {
+    DEFAULT_HINT_KEYS,
     SELECTED_BLOCK_CSS_CLASS,
     HINT_CSS_CLASS,
     BLUR_PIXEL_ID,
@@ -47,12 +48,9 @@ export const VIM_MODE_STYLES = `
     top: 3px;
 }
 
-.${HINT_CSS_CLASS}0::after { content: "[q]"; }
-.${HINT_CSS_CLASS}1::after { content: "[w]"; }
-.${HINT_CSS_CLASS}2::after { content: "[e]"; }
-.${HINT_CSS_CLASS}3::after { content: "[r]"; }
-.${HINT_CSS_CLASS}4::after { content: "[t]"; }
-.${HINT_CSS_CLASS}5::after { content: "[b]"; }
+${DEFAULT_HINT_KEYS.map((key, index) =>
+    `.${HINT_CSS_CLASS}${index}::after { content: "[${key}]"; }`
+).join('\n')}
 
 #${BLUR_PIXEL_ID} {
     position: fixed;

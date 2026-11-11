@@ -79,8 +79,8 @@ function escapeHtmlId(htmlId) {
 }
 var BLOCK_ID_PREFIX = "block-input-";
 var UID_LENGTH = 9;
-var HINT_IDS = [0, 1, 2, 3, 4, 5];
-var DEFAULT_HINT_KEYS = ["q", "w", "e", "r", "t", "b"];
+var DEFAULT_HINT_KEYS = ["q", "w", "e", "r", "t", "m", "b"];
+var HINT_IDS = DEFAULT_HINT_KEYS.map((_, index) => index);
 var HINT_CHARS = "asdfghjkl";
 var SCROLL_PADDING = 50;
 var SEQUENCE_TIMEOUT_MS = 500;
@@ -1978,7 +1978,7 @@ var KEYBINDINGS = {
     { key: "u", description: "Undo" },
     { key: "Ctrl+r", description: "Redo" },
     { key: "z", description: "Toggle fold" },
-    { key: "c", description: "Center current block" }
+    { key: "c", description: "Copy block reference (normal / visual)" }
   ],
   "Search": [
     { key: "/", description: "Search in current panel" },
@@ -1988,10 +1988,11 @@ var KEYBINDINGS = {
   "Hints": [
     { key: "f", description: "Hint all links on page" },
     { key: "F", description: "Hint links \u2192 open in sidebar" },
-    { key: "q/w/e/r/t/b", description: "Click link in block" },
+    { key: "q/w/e/r/t/m/b", description: "Click hint 0\u20136 in block" },
     { key: "Shift + hint", description: "Shift-click link" }
   ],
   "Other": [
+    { key: "Alt+w", description: "Close current sidebar page (all modes)" },
     { key: "Esc", description: "Return to normal mode" },
     { key: "?", description: "Toggle this help panel" },
     { key: "Space", description: "Leader menu (if enabled)" }
@@ -2487,6 +2488,14 @@ function handleKeydown(event) {
     activeElement: document.activeElement,
     blockSelections: document.querySelectorAll(Selectors.highlight).length
   });
+  if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey && (key === "w" || event.code === "KeyW") && !isHelpPanelOpen() && !isRoamModalFocused()) {
+    consume(event);
+    resetKeybindingState();
+    hidePageHints();
+    exitSearchMode();
+    runCommand(closeSidebarPage);
+    return;
+  }
   if (mode === Mode.SEARCH) {
     if (key === "escape" || key === "enter") {
       consume(event);
@@ -2602,6 +2611,8 @@ function matchCommand(sequence, mode, event) {
       return selectBlockDown;
     if (key === "k" && plain)
       return selectBlockUp;
+    if (key === "c" && plain)
+      return copySelectedBlockReference;
     return null;
   }
   if (!isNormal) {
@@ -2640,7 +2651,7 @@ function matchCommand(sequence, mode, event) {
   if (key === "z" && plain)
     return toggleFold;
   if (key === "c" && plain)
-    return centerCurrentBlock;
+    return copySelectedBlockReference;
   if (key === "u" && plain)
     return undo2;
   if (key === "r" && event.ctrlKey && !event.altKey)
@@ -2696,12 +2707,9 @@ var VIM_MODE_STYLES = `
     top: 3px;
 }
 
-.${HINT_CSS_CLASS}0::after { content: "[q]"; }
-.${HINT_CSS_CLASS}1::after { content: "[w]"; }
-.${HINT_CSS_CLASS}2::after { content: "[e]"; }
-.${HINT_CSS_CLASS}3::after { content: "[r]"; }
-.${HINT_CSS_CLASS}4::after { content: "[t]"; }
-.${HINT_CSS_CLASS}5::after { content: "[b]"; }
+${DEFAULT_HINT_KEYS.map(
+  (key, index) => `.${HINT_CSS_CLASS}${index}::after { content: "[${key}]"; }`
+).join("\n")}
 
 #${BLUR_PIXEL_ID} {
     position: fixed;

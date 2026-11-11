@@ -4,10 +4,20 @@ A Roam Research extension that provides Vim-like keyboard navigation for blocks.
 
 ## Folded block fix
 
-This fork includes the `folded-o-v1` build. The `o` command uses the fold state
+This fork includes the `folded-o-v2` build. The `o` command uses the fold state
 shown in the selected view. A folded block gets a new sibling below it. An
 expanded block with children gets a new first child. `Shift+O` adds a sibling
 above the selected block.
+
+This build also sets these shortcuts in code: `m` clicks hint 5 (the sixth
+target), `f` shows hints for visible links, `c` copies the selected block
+reference in normal or visual mode, and `Alt+W` closes the current sidebar page
+in all modes. On macOS, use Option for Alt. `b` clicks hint 6 (the seventh
+target). Centering remains available through `SPC g c` when the leader menu is
+enabled.
+
+These defaults apply to this fork. It does not import settings from the separate
+Roam Toolkit Vim Mode extension.
 
 ### Import this build from a URL
 
@@ -17,12 +27,12 @@ above the selected block.
 4. Paste this root URL, without adding `extension.js`:
 
    ```text
-   https://raw.githubusercontent.com/gvteja/roam-vim-mode/folded-o-v1
+   https://raw.githubusercontent.com/gvteja/roam-vim-mode/folded-o-v2
    ```
 
 5. Load the extension.
 
-This URL selects the `folded-o-v1` build. It does not track future changes to
+This URL selects the `folded-o-v2` build. It does not track future changes to
 `main`. The root contains the required `README.md` and `extension.js` files.
 
 Developer extensions are local to each client. Remote URL imports start again
@@ -69,7 +79,7 @@ original Vim Mode extension.
 | `u` | Undo |
 | `Ctrl+R` | Redo |
 | `z` | Toggle fold |
-| `c` | Center current block |
+| `c` | Copy selected block reference (normal or visual mode) |
 
 ### Search
 
@@ -88,7 +98,7 @@ When a block is selected, clickable elements (links, references, checkboxes) sho
 
 | Key | Description |
 |-----|-------------|
-| `q`, `w`, `e`, `r`, `t`, `b` | Click hint 0-5 |
+| `q`, `w`, `e`, `r`, `t`, `m`, `b` | Click hint 0-6 |
 | `Shift+` hint key | Shift-click hint (open in sidebar) |
 
 Vimium-style hints for every link on the page:
@@ -103,6 +113,7 @@ Vimium-style hints for every link on the page:
 
 | Key | Description |
 |-----|-------------|
+| `Alt+W` | Close the current sidebar page (all modes; Option+W on macOS) |
 | `Escape` | Return to normal mode |
 | `?` | Toggle help panel |
 

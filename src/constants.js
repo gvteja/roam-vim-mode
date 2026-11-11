@@ -99,8 +99,8 @@ export const BLOCK_ID_PREFIX = 'block-input-';
 export const UID_LENGTH = 9;
 
 // ============== In-block hints ==============
-export const HINT_IDS = [0, 1, 2, 3, 4, 5];
-export const DEFAULT_HINT_KEYS = ['q', 'w', 'e', 'r', 't', 'b'];
+export const DEFAULT_HINT_KEYS = ['q', 'w', 'e', 'r', 't', 'm', 'b'];
+export const HINT_IDS = DEFAULT_HINT_KEYS.map((_, index) => index);
 
 // ============== Page-wide hints (Vimium style) ==============
 export const HINT_CHARS = 'asdfghjkl';

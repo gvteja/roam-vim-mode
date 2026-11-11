@@ -20,7 +20,7 @@ import {
 import { showHelpPanel, hideHelpPanel, isHelpPanelOpen } from './help-panel.js';
 import { showWhichKey, showWhichKeyImmediate, hideWhichKey } from './which-key.js';
 import { DEFAULT_LEADER_CONFIG, LEADER_COMMAND_REGISTRY } from './leader-config.js';
-import { enterSearchMode, handleSearchInput, nextMatch, previousMatch } from './search.js';
+import { enterSearchMode, exitSearchMode, handleSearchInput, nextMatch, previousMatch } from './search.js';
 import { isSpacemacsEnabled } from './settings.js';
 import {
     returnToNormalMode,
@@ -28,7 +28,8 @@ import {
     selectBlockDown,
     selectFirstBlock,
     selectLastBlock,
-    centerCurrentBlock,
+    closeSidebarPage,
+    copySelectedBlockReference,
     insertBlockAfter,
     editBlock,
     editBlockFromEnd,
@@ -202,6 +203,19 @@ export function handleKeydown(event) {
         blockSelections: document.querySelectorAll(Selectors.highlight).length,
     });
 
+    // Alt+W closes the selected sidebar page in every mode. On macOS,
+    // Option+W can report a symbol as `key`, so also accept its physical code.
+    if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey &&
+        (key === 'w' || event.code === 'KeyW') &&
+        !isHelpPanelOpen() && !isRoamModalFocused()) {
+        consume(event);
+        resetKeybindingState();
+        hidePageHints();
+        exitSearchMode();
+        runCommand(closeSidebarPage);
+        return;
+    }
+
     // --- Search mode: the input owns the keyboard, we only handle control keys.
     if (mode === Mode.SEARCH) {
         if (key === 'escape' || key === 'enter') {
@@ -361,10 +375,11 @@ export function matchCommand(sequence, mode, event) {
         return returnToNormalMode;
     }
 
-    // In VISUAL mode j/k grow the block selection instead of moving it.
+    // In VISUAL mode j/k grow the selection; c copies the block reference.
     if (isVisual) {
         if (key === 'j' && plain) return selectBlockDown;
         if (key === 'k' && plain) return selectBlockUp;
+        if (key === 'c' && plain) return copySelectedBlockReference;
         return null;
     }
 
@@ -407,7 +422,9 @@ export function matchCommand(sequence, mode, event) {
 
     // --- View
     if (key === 'z' && plain) return toggleFold;
-    if (key === 'c' && plain) return centerCurrentBlock;
+
+    // --- Clipboard
+    if (key === 'c' && plain) return copySelectedBlockReference;
 
     // --- History
     if (key === 'u' && plain) return undo;

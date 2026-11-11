@@ -111,7 +111,7 @@ test('hint keys resolve to a click, and Ctrl+R is not treated as a hint', () => 
     assert.equal(match('ctrl+r', 'r', { ctrlKey: true }), redo);
 });
 
-test('VISUAL mode only grows the selection', () => {
+test('VISUAL mode navigation grows the selection without editing', () => {
     assert.equal(match('j', 'j', {}, Mode.VISUAL), selectBlockDown);
     assert.equal(match('k', 'k', {}, Mode.VISUAL), selectBlockUp);
     // Editing bindings must not fire while a block selection is active.
